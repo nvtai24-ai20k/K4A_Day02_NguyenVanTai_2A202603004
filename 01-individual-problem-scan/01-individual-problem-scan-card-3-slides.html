@@ -1,0 +1,1353 @@
+<title>25 phút tìm trẻ lạc</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Roboto+Mono:wght@500;600&display=swap">
+<style>
+  :root {
+    --ground: #EDF1EE;
+    --surface: #FFFFFF;
+    --ink: #13201B;
+    --muted: #56655F;
+    --line: #D3DCD6;
+    --band: #F2B705;
+    --band-ink: #211A02;
+    --band-edge: #CF9A00;
+    --route: #1B5FAE;
+    --route-soft: #E2ECF7;
+    --alert: #BA3A2A;
+    --alert-soft: #F9E4E0;
+    --safe: #1F7547;
+    --safe-soft: #DFF0E6;
+    --mid: #845F00;
+    --mid-soft: #FAEFCB;
+    --hatch: #BFCAC4;
+    --shadow: 0 1px 2px rgba(19, 32, 27, .06), 0 10px 28px rgba(19, 32, 27, .09);
+
+    --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+    --f-body: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+    --f-mono: "Roboto Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0C1411;
+      --surface: #141F1B;
+      --ink: #E3EBE7;
+      --muted: #93A29B;
+      --line: #2A3832;
+      --band-edge: #B38600;
+      --route: #7EB2EC;
+      --route-soft: #172A3E;
+      --alert: #F08473;
+      --alert-soft: #3A1D18;
+      --safe: #6DC79A;
+      --safe-soft: #14302A;
+      --mid: #E8C15A;
+      --mid-soft: #342B12;
+      --hatch: #3A4A43;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 12px 32px rgba(0, 0, 0, .4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0C1411;
+    --surface: #141F1B;
+    --ink: #E3EBE7;
+    --muted: #93A29B;
+    --line: #2A3832;
+    --band-edge: #B38600;
+    --route: #7EB2EC;
+    --route-soft: #172A3E;
+    --alert: #F08473;
+    --alert-soft: #3A1D18;
+    --safe: #6DC79A;
+    --safe-soft: #14302A;
+    --mid: #E8C15A;
+    --mid-soft: #342B12;
+    --hatch: #3A4A43;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .35), 0 12px 32px rgba(0, 0, 0, .4);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    padding-inline: 16px;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--f-body);
+    -webkit-font-smoothing: antialiased;
+  }
+  :focus-visible { outline: 2px solid var(--route); outline-offset: 2px; }
+
+  /* ---------- Deck shell ---------- */
+  .deck {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    align-items: center;
+    justify-items: center;
+    gap: 12px;
+    padding-block: 16px;
+  }
+  .frame {
+    width: min(100%, calc((100vh - 112px) * 16 / 9));
+    aspect-ratio: 16 / 9;
+    position: relative;
+    container-type: inline-size;
+  }
+  .slide {
+    --u: 1cqw;
+    position: absolute;
+    inset: 0;
+    display: none;
+    grid-template-rows: auto 1fr auto;
+    gap: calc(var(--u) * 1.8);
+    padding: calc(var(--u) * 3.4) calc(var(--u) * 4.2) calc(var(--u) * 2.2);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: calc(var(--u) * .9);
+    box-shadow: var(--shadow);
+    overflow: auto;
+  }
+  .slide.is-active { display: grid; }
+  .deck.animate .slide.is-active { animation: slide-in .26s ease-out; }
+  @keyframes slide-in {
+    from { opacity: .4; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .deck.animate .slide.is-active { animation: none; }
+  }
+
+  .controls {
+    width: min(100%, calc((100vh - 112px) * 16 / 9));
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .btn {
+    font: 600 14px/1 var(--f-body);
+    color: var(--ink);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 12px;
+    cursor: pointer;
+  }
+  .btn:hover { border-color: var(--ink); }
+  .strip { flex: 1; display: flex; gap: 3px; height: 10px; }
+  .strip button {
+    flex: 1;
+    border: 0;
+    padding: 0;
+    border-radius: 3px;
+    background: var(--line);
+    cursor: pointer;
+  }
+  .strip button.done { background: var(--hatch); }
+  .strip button[aria-current="true"] { background: var(--band); }
+  .count {
+    font: 500 13px/1 var(--f-mono);
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .hint { font: 500 12px/1 var(--f-mono); color: var(--muted); white-space: nowrap; }
+
+  /* ---------- Slide typography ---------- */
+  .head { display: grid; gap: calc(var(--u) * 1); align-content: start; }
+  .eyebrow {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 1);
+    margin: 0;
+    font: 600 max(11px, calc(var(--u) * 1.02))/1.2 var(--f-mono);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .sec {
+    background: var(--band);
+    color: var(--band-ink);
+    padding: .35em .75em;
+    border-radius: 999px;
+  }
+  h1, h2 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    margin: 0;
+    text-wrap: balance;
+    letter-spacing: -.004em;
+  }
+  h2 { font-size: calc(var(--u) * 3.6); line-height: 1.08; max-width: 34ch; }
+  h2.tight { font-size: calc(var(--u) * 3.1); }
+  h3 { margin: 0; }
+  p { margin: 0; }
+  .lead { font-size: calc(var(--u) * 1.7); line-height: 1.45; color: var(--muted); max-width: 60ch; }
+  .txt { font-size: calc(var(--u) * 1.42); line-height: 1.5; }
+  .small { font-size: max(11px, calc(var(--u) * 1.12)); line-height: 1.45; color: var(--muted); }
+  .body { min-height: 0; display: grid; gap: calc(var(--u) * 1.8); align-content: start; }
+  .foot {
+    display: flex;
+    justify-content: space-between;
+    gap: calc(var(--u) * 2);
+    padding-top: calc(var(--u) * .9);
+    border-top: 1px solid var(--line);
+    font: 500 max(11px, calc(var(--u) * 1))/1.3 var(--f-mono);
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- Chips ---------- */
+  .c {
+    display: inline-block;
+    padding: .18em .6em;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: .92em;
+    white-space: nowrap;
+  }
+  .good { background: var(--safe-soft); color: var(--safe); }
+  .mid { background: var(--mid-soft); color: var(--mid); }
+  .bad { background: var(--alert-soft); color: var(--alert); }
+  .v-pick { background: var(--ink); color: var(--surface); }
+  .v-pilot { background: var(--band); color: var(--band-ink); }
+  .v-no { border: 1px solid var(--line); color: var(--muted); }
+  .ltag {
+    display: inline-block;
+    font: 600 max(10px, calc(var(--u) * .9))/1.3 var(--f-mono);
+    letter-spacing: .04em;
+    background: var(--band);
+    color: var(--band-ink);
+    border-radius: 4px;
+    padding: .05em .45em;
+    margin-right: .45em;
+    vertical-align: .1em;
+  }
+
+  /* ---------- 1. Title ---------- */
+  .slide--title { grid-template-rows: auto 1fr auto auto; }
+  .title-main {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: calc(var(--u) * 3.4);
+    align-items: end;
+    align-self: center;
+  }
+  .big-num {
+    display: flex;
+    align-items: flex-start;
+    font-family: var(--f-display);
+    font-weight: 800;
+    font-size: calc(var(--u) * 17);
+    line-height: .84;
+    letter-spacing: -.02em;
+  }
+  .big-num .tilde { font-size: .42em; font-weight: 600; color: var(--muted); margin-top: .12em; }
+  .big-num .unit {
+    align-self: flex-end;
+    margin: 0 0 .32em .12em;
+    font-size: .19em;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--alert);
+  }
+  .title-copy { display: grid; gap: calc(var(--u) * 1.4); padding-bottom: calc(var(--u) * .8); }
+  h1 { font-size: calc(var(--u) * 5); line-height: 1.04; }
+
+  .band {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--u) * 2);
+    margin-inline: calc(var(--u) * -1.2);
+    padding: calc(var(--u) * .9) calc(var(--u) * 1.2) calc(var(--u) * .9) calc(var(--u) * 1.8);
+    background: var(--band);
+    color: var(--band-ink);
+    border-radius: calc(var(--u) * 1.3);
+    box-shadow: inset 0 -3px 0 var(--band-edge);
+    transform: rotate(-1.4deg);
+  }
+  .band-hole {
+    flex: none;
+    width: calc(var(--u) * 1.6);
+    height: calc(var(--u) * 1.6);
+    border-radius: 50%;
+    background: var(--surface);
+    box-shadow: inset 0 0 0 2px var(--band-edge);
+  }
+  .band-text { flex: 1; font: 600 calc(var(--u) * 1.1)/1.35 var(--f-mono); letter-spacing: .06em; }
+  .band-code { font: 800 calc(var(--u) * 1.9)/1 var(--f-display); letter-spacing: .05em; white-space: nowrap; }
+  .qr {
+    flex: none;
+    width: calc(var(--u) * 6);
+    height: calc(var(--u) * 6);
+    padding: calc(var(--u) * .4);
+    background: #FFFBEA;
+    color: #211A02;
+    border-radius: calc(var(--u) * .4);
+  }
+
+  /* ---------- 2. Context ---------- */
+  .ctx { display: grid; grid-template-columns: 1fr 1.35fr; gap: calc(var(--u) * 4); align-items: start; }
+  .facts { display: grid; grid-template-columns: auto 1fr; gap: calc(var(--u) * 1.1) calc(var(--u) * 2); margin: 0; }
+  .facts dt {
+    font: 600 max(11px, calc(var(--u) * 1))/1.5 var(--f-mono);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: .15em;
+  }
+  .facts dd { margin: 0; font-size: calc(var(--u) * 1.45); line-height: 1.45; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(var(--u) * 1.6); }
+  .stat { border-top: 3px solid var(--ink); padding-top: calc(var(--u) * 1); display: grid; gap: calc(var(--u) * .5); align-content: start; }
+  .stat b { font: 800 calc(var(--u) * 5.2)/1 var(--f-display); font-variant-numeric: tabular-nums; }
+  .stat b small { font-size: .45em; font-weight: 700; margin-left: .1em; }
+  .callout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: calc(var(--u) * 1.4);
+    align-items: center;
+    padding: calc(var(--u) * 1.4) calc(var(--u) * 1.8);
+    background: var(--alert-soft);
+    border-radius: calc(var(--u) * .8);
+  }
+  .callout strong { font: 700 calc(var(--u) * 2)/1.1 var(--f-display); color: var(--alert); text-transform: uppercase; letter-spacing: .02em; }
+  .callout p { font-size: calc(var(--u) * 1.5); line-height: 1.45; }
+
+  /* ---------- 3. Current workflow ---------- */
+  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: calc(var(--u) * 1.6); }
+  .node {
+    position: relative;
+    display: grid;
+    gap: calc(var(--u) * .7);
+    align-content: start;
+    padding: calc(var(--u) * 1.3);
+    background: var(--ground);
+    border: 1px solid var(--line);
+    border-radius: calc(var(--u) * .8);
+  }
+  .node:not(:last-child)::after {
+    content: "→";
+    position: absolute;
+    right: calc(var(--u) * -.8);
+    top: 50%;
+    transform: translate(50%, -50%);
+    font: 600 calc(var(--u) * 1.5)/1 var(--f-mono);
+    color: var(--muted);
+  }
+  .node .idx { font: 600 max(11px, calc(var(--u) * 1))/1 var(--f-mono); color: var(--muted); }
+  .node .t { font: 800 calc(var(--u) * 3.2)/1 var(--f-display); font-variant-numeric: tabular-nums; }
+  .node h3 { font-size: calc(var(--u) * 1.38); font-weight: 600; line-height: 1.35; }
+  .node .who { font-size: max(11px, calc(var(--u) * 1.1)); color: var(--muted); }
+  .node.hot { background: var(--alert-soft); border: 2px solid var(--alert); }
+  .node.hot .t, .node.hot .idx { color: var(--alert); }
+  .sumline { display: flex; flex-wrap: wrap; gap: calc(var(--u) * .6) calc(var(--u) * 3); font-size: calc(var(--u) * 1.4); }
+  .sumline b { font-family: var(--f-display); font-size: 1.35em; font-weight: 700; margin-right: .25em; }
+
+  /* ---------- 4. Two directions ---------- */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 2.2); }
+  .panel {
+    display: grid;
+    gap: calc(var(--u) * 1.1);
+    align-content: start;
+    padding: calc(var(--u) * 1.8);
+    background: var(--ground);
+    border: 1px solid var(--line);
+    border-radius: calc(var(--u) * .9);
+  }
+  .dir { display: flex; align-items: center; gap: calc(var(--u) * .8); font: 700 calc(var(--u) * 2.4)/1.1 var(--f-display); }
+  .dir .ar { color: var(--alert); font-family: var(--f-mono); font-size: .8em; }
+  .quote {
+    font: italic 500 calc(var(--u) * 1.8)/1.35 var(--f-body);
+    border-left: 3px solid var(--band);
+    padding-left: calc(var(--u) * 1.1);
+  }
+  .statement { font: 700 calc(var(--u) * 2.7)/1.15 var(--f-display); text-wrap: balance; max-width: 40ch; }
+  .statement mark { background: var(--band); color: var(--band-ink); padding: 0 .18em; border-radius: .12em; }
+
+  /* ---------- 5. Timeline ---------- */
+  .tl {
+    display: grid;
+    grid-template-columns: 5.5fr 11.5fr 18fr 5fr;
+    column-gap: 3px;
+    row-gap: calc(var(--u) * .9);
+    margin-top: calc(var(--u) * 1.2);
+  }
+  .br-top {
+    grid-column: 1 / 2;
+    grid-row: 1;
+    position: relative;
+    height: calc(var(--u) * 3.4);
+    border: 2px solid var(--route);
+    border-bottom: 0;
+    border-radius: 4px 4px 0 0;
+    align-self: end;
+  }
+  .br-top span {
+    position: absolute;
+    left: calc(var(--u) * .8);
+    top: calc(var(--u) * .5);
+    white-space: nowrap;
+    font: 600 max(11px, calc(var(--u) * 1.15))/1.2 var(--f-mono);
+    color: var(--route);
+  }
+  .seg { grid-row: 2; display: grid; gap: calc(var(--u) * .6); align-content: start; min-width: 0; }
+  .seg-a { grid-column: 1; } .seg-b { grid-column: 2; } .seg-c { grid-column: 3; } .seg-d { grid-column: 4; }
+  .seg-label { font-size: max(11px, calc(var(--u) * 1.12)); line-height: 1.3; min-height: 2.6em; }
+  .seg-label b { display: block; font-family: var(--f-mono); font-weight: 600; }
+  .seg-bar { height: calc(var(--u) * 3.6); border-radius: 3px; display: flex; align-items: center; padding-inline: calc(var(--u) * .8); font: 700 calc(var(--u) * 1.8)/1 var(--f-display); font-variant-numeric: tabular-nums; }
+  .seg-a .seg-bar {
+    background: repeating-linear-gradient(135deg, var(--hatch) 0 5px, transparent 5px 10px);
+    border: 1.5px dashed var(--muted);
+    color: var(--muted);
+  }
+  .seg-b .seg-bar { background: var(--route-soft); border: 1.5px solid var(--route); color: var(--route); }
+  .seg-c .seg-bar { background: var(--alert-soft); border: 2px solid var(--alert); color: var(--alert); }
+  .seg-d .seg-bar { background: var(--safe-soft); border: 1.5px solid var(--safe); color: var(--safe); }
+  .tick {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    gap: calc(var(--u) * .5);
+    padding-top: calc(var(--u) * .5);
+    border-left: 2px solid var(--ink);
+    padding-left: calc(var(--u) * .5);
+    font: 500 max(10px, calc(var(--u) * 1))/1.3 var(--f-mono);
+    color: var(--muted);
+  }
+  .tick b { color: var(--ink); font-weight: 600; margin-right: .3em; }
+  .tick .end { text-align: right; border-right: 2px solid var(--ink); padding-right: calc(var(--u) * .5); margin-right: -2px; }
+  .br-bottom {
+    grid-column: 3 / 5;
+    grid-row: 3;
+    height: calc(var(--u) * 1.2);
+    border: 2px solid var(--muted);
+    border-top: 0;
+    border-radius: 0 0 4px 4px;
+  }
+  .br-bottom-label { grid-column: 3 / 5; grid-row: 4; font: 600 max(11px, calc(var(--u) * 1.15))/1.3 var(--f-mono); color: var(--muted); text-align: center; }
+  .insights { display: grid; grid-template-columns: 1fr 1fr; gap: calc(var(--u) * 2.4); }
+  .insights p { font-size: calc(var(--u) * 1.45); line-height: 1.45; padding-left: calc(var(--u) * 1.1); border-left: 3px solid var(--line); }
+  .insights p.key { border-left-color: var(--route); }
+
+  /* ---------- Tables ---------- */
+  .tbl-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: calc(var(--u) * 1.18); font-variant-numeric: tabular-nums; }
+  th {
+    text-align: left;
+    font: 600 max(10px, calc(var(--u) * .92))/1.3 var(--f-mono);
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 calc(var(--u) * .7) calc(var(--u) * .6);
+    border-bottom: 1.5px solid var(--ink);
+    vertical-align: bottom;
+  }
+  td { padding: calc(var(--u) * .62) calc(var(--u) * .7); border-bottom: 1px solid var(--line); vertical-align: middle; line-height: 1.35; }
+  td.name { font-weight: 600; }
+  td.name .id { font-family: var(--f-mono); color: var(--muted); font-weight: 600; margin-right: .5em; }
+  .num-cell { font-family: var(--f-display); font-weight: 700; font-size: 1.3em; white-space: nowrap; }
+
+  /* ---------- 7. Critique ---------- */
+  .crit-card { display: grid; gap: calc(var(--u) * 1); align-content: start; }
+  .crit-h { font: 700 calc(var(--u) * 2.6)/1 var(--f-display); padding-bottom: calc(var(--u) * .7); border-bottom: 2px solid var(--ink); }
+  .crit { display: grid; grid-template-columns: calc(var(--u) * 11) 1fr; gap: calc(var(--u) * 1) calc(var(--u) * 1.4); margin: 0; }
+  .crit dt { font: 600 max(11px, calc(var(--u) * 1))/1.5 var(--f-mono); letter-spacing: .05em; text-transform: uppercase; padding-top: .2em; }
+  .crit dt.ok { color: var(--safe); }
+  .crit dt.warn { color: var(--alert); }
+  .crit dt.info { color: var(--route); }
+  .crit dd { margin: 0; font-size: calc(var(--u) * 1.35); line-height: 1.45; }
+
+  /* ---------- 8. Ladder ---------- */
+  .ladder { display: grid; gap: calc(var(--u) * .7); }
+  .rung {
+    display: grid;
+    grid-template-columns: calc(var(--u) * 20) 1fr auto;
+    gap: calc(var(--u) * 1.8);
+    align-items: center;
+    padding: calc(var(--u) * .95) calc(var(--u) * 1.4);
+    border: 1px solid var(--line);
+    border-radius: calc(var(--u) * .7);
+  }
+  .rung.on { background: var(--safe-soft); border-color: var(--safe); }
+  .rung-name { font: 700 calc(var(--u) * 2.1)/1.05 var(--f-display); }
+  .rung-name small { display: block; font: 500 max(10px, calc(var(--u) * .95))/1.3 var(--f-mono); color: var(--muted); letter-spacing: .03em; margin-top: .2em; }
+  .rung.off .rung-name { color: var(--muted); }
+  .rung p { font-size: calc(var(--u) * 1.35); line-height: 1.4; }
+  .gut {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--u) * 1) calc(var(--u) * 1.4);
+    font-size: calc(var(--u) * 1.4);
+  }
+  .gut .old { text-decoration: line-through; text-decoration-thickness: 2px; color: var(--muted); }
+  .gut .new { font-weight: 700; }
+  .gut .lbl { font: 600 max(11px, calc(var(--u) * 1))/1 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+
+  /* ---------- 9. Layers ---------- */
+  .layers { display: flex; flex-direction: column-reverse; gap: calc(var(--u) * .9); }
+  .layer {
+    display: grid;
+    grid-template-columns: calc(var(--u) * 17) 1fr calc(var(--u) * 17);
+    gap: calc(var(--u) * 2);
+    align-items: center;
+    padding: calc(var(--u) * 1.2) calc(var(--u) * 1.8);
+    background: var(--ground);
+    border: 1px solid var(--line);
+    border-radius: calc(var(--u) * 1.2);
+  }
+  .layer-name { font: 700 calc(var(--u) * 2.3)/1.05 var(--f-display); }
+  .layer-name small { display: block; font: 600 max(10px, calc(var(--u) * .95))/1.3 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .2em; }
+  .layer p { font-size: calc(var(--u) * 1.35); line-height: 1.4; }
+  .layer .meta { display: grid; gap: calc(var(--u) * .5); justify-items: start; font-size: max(11px, calc(var(--u) * 1.1)); color: var(--muted); }
+  .layer.l1 { background: var(--band); color: var(--band-ink); border-color: var(--band-edge); }
+  .layer.l1 .layer-name small, .layer.l1 .meta { color: var(--band-ink); }
+  .layer.l1 .v-pick { background: var(--band-ink); color: var(--band); }
+  .skip { font-size: calc(var(--u) * 1.3); color: var(--muted); }
+  .skip b { color: var(--ink); }
+
+  /* ---------- 10. Proposed flow ---------- */
+  .flow {
+    display: grid;
+    grid-template-columns: 1.05fr 3.2fr 1fr .95fr;
+    grid-template-rows: repeat(4, auto);
+    gap: calc(var(--u) * .9) calc(var(--u) * 1.2);
+  }
+  .fbox {
+    display: grid;
+    gap: calc(var(--u) * .7);
+    align-content: center;
+    padding: calc(var(--u) * 1.2);
+    border: 1px solid var(--line);
+    border-radius: calc(var(--u) * .8);
+    background: var(--ground);
+    font-size: calc(var(--u) * 1.18);
+    line-height: 1.4;
+  }
+  .fbox h3 { font: 600 max(10px, calc(var(--u) * .95))/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .fbox ul { margin: 0; padding-left: 1em; display: grid; gap: calc(var(--u) * .5); }
+  .f-gate { grid-column: 1; grid-row: 1 / 5; align-content: start; }
+  .f-verify { grid-column: 3; grid-row: 1 / 5; background: var(--safe-soft); border: 2px solid var(--safe); }
+  .f-verify h3 { color: var(--safe); }
+  .f-verify strong { font: 700 calc(var(--u) * 2)/1.1 var(--f-display); }
+  .f-log { grid-column: 4; grid-row: 1 / 5; }
+  .frow {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: calc(var(--u) * .5) calc(var(--u) * .6);
+    font-size: calc(var(--u) * 1.15);
+    line-height: 1.3;
+  }
+  .r1 { grid-row: 1; } .r2 { grid-row: 2; } .r3 { grid-row: 3; } .r4 { grid-row: 4; }
+  .trig {
+    padding: calc(var(--u) * .45) calc(var(--u) * .8);
+    border: 1.5px solid var(--route);
+    border-radius: calc(var(--u) * .5);
+    background: var(--route-soft);
+    color: var(--route);
+    font-weight: 600;
+  }
+  .stp { padding: calc(var(--u) * .45) calc(var(--u) * .8); border: 1px solid var(--line); border-radius: calc(var(--u) * .5); background: var(--surface); }
+  .arr { font-family: var(--f-mono); color: var(--muted); }
+  .esc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--u) * .6) calc(var(--u) * 1.4);
+    align-items: center;
+    padding: calc(var(--u) * .8) calc(var(--u) * 1.2);
+    border: 1.5px dashed var(--alert);
+    border-radius: calc(var(--u) * .6);
+    font-size: calc(var(--u) * 1.25);
+  }
+  .esc b { color: var(--alert); font-family: var(--f-mono); font-weight: 600; }
+
+  /* ---------- 12. Boundary ---------- */
+  .lists { display: grid; grid-template-columns: repeat(3, 1fr); gap: calc(var(--u) * 2); }
+  .list { display: grid; gap: calc(var(--u) * .9); align-content: start; border-top: 3px solid var(--line); padding-top: calc(var(--u) * 1); }
+  .list.do { border-top-color: var(--safe); }
+  .list.dont { border-top-color: var(--alert); }
+  .list.data { border-top-color: var(--route); }
+  .list h3 { font: 700 calc(var(--u) * 2.2)/1 var(--f-display); }
+  .list.do h3 { color: var(--safe); }
+  .list.dont h3 { color: var(--alert); }
+  .list.data h3 { color: var(--route); }
+  .list ul { margin: 0; padding-left: 1.05em; display: grid; gap: calc(var(--u) * .7); }
+  .list li { font-size: calc(var(--u) * 1.32); line-height: 1.45; }
+
+  /* ---------- 14. Validate ---------- */
+  .final { display: grid; grid-template-columns: 1.25fr 1fr; gap: calc(var(--u) * 3); align-items: start; }
+  .checks { list-style: none; margin: 0; padding: 0; display: grid; gap: calc(var(--u) * .9); }
+  .checks li { display: grid; gap: calc(var(--u) * .2); padding-bottom: calc(var(--u) * .9); border-bottom: 1px solid var(--line); }
+  .checks li b { font-size: calc(var(--u) * 1.38); font-weight: 600; }
+  .checks li span { font-size: max(11px, calc(var(--u) * 1.18)); color: var(--muted); }
+  .ask {
+    display: grid;
+    gap: calc(var(--u) * 1.2);
+    padding: calc(var(--u) * 1.8);
+    background: var(--band);
+    color: var(--band-ink);
+    border-radius: calc(var(--u) * 1);
+  }
+  .ask h3 { font: 700 calc(var(--u) * 2.4)/1.05 var(--f-display); }
+  .ask ol { margin: 0; padding-left: 1.2em; display: grid; gap: calc(var(--u) * 1); }
+  .ask li { font-size: calc(var(--u) * 1.45); line-height: 1.45; }
+
+  /* ---------- Narrow screens: stacked slides, no deck ---------- */
+  @media (max-width: 759px), (max-height: 419px) {
+    .deck { display: block; min-height: 0; }
+    .frame {
+      width: 100%;
+      aspect-ratio: auto;
+      position: static;
+      container-type: normal;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .slide {
+      --u: 10px;
+      position: static;
+      display: grid;
+      padding: 22px 18px 16px;
+      overflow: visible;
+      border-radius: 10px;
+    }
+    .controls { display: none; }
+    h2 { font-size: 30px; }
+    h2.tight { font-size: 28px; }
+    .big-num { font-size: 120px; }
+    h1 { font-size: 36px; }
+    .band { transform: none; margin-inline: 0; flex-wrap: wrap; }
+    .title-main, .ctx, .two, .insights, .lists, .final { grid-template-columns: 1fr; }
+    .stats { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .stat b { font-size: 34px; }
+    .steps { grid-template-columns: 1fr; gap: 10px; }
+    .node:not(:last-child)::after { content: none; }
+    .tl { grid-template-columns: 1fr; }
+    .tl > * { grid-column: 1; grid-row: auto; }
+    .br-top { height: auto; border: 0; }
+    .br-top span { position: static; white-space: normal; }
+    .br-bottom { display: none; }
+    .br-bottom-label { text-align: left; }
+    .seg-label { min-height: 0; }
+    .crit { grid-template-columns: 1fr; }
+    .rung { grid-template-columns: 1fr; gap: 8px; justify-items: start; }
+    .layer { grid-template-columns: 1fr; gap: 8px; }
+    .flow { grid-template-columns: 1fr; }
+    .flow > * { grid-column: 1; grid-row: auto; }
+    .callout { grid-template-columns: 1fr; }
+  }
+</style>
+
+<main class="deck" id="deck">
+  <div class="frame" id="frame">
+
+    <!-- 1 -->
+    <section class="slide slide--title">
+      <p class="eyebrow"><span class="sec">Problem Card #3</span><span>AI20K · K4A · Day 02</span></p>
+      <div class="title-main">
+        <div class="big-num" aria-label="khoảng 25 phút"><span class="tilde">~</span>25<span class="unit">phút</span></div>
+        <div class="title-copy">
+          <h1>Tìm trẻ lạc trong khu vui chơi đông khách</h1>
+          <p class="lead">Thời gian từ lúc phụ huynh báo lạc tới lúc đoàn tụ — chưa tính những phút phụ huynh còn chưa biết con đã rời đi.</p>
+        </div>
+      </div>
+      <div class="band" aria-hidden="true">
+        <span class="band-hole"></span>
+        <span class="band-text">VÒNG ĐỊNH DANH · TRẺ DƯỚI 10 TUỔI · THẤY TRẺ ĐI MỘT MÌNH? QUÉT MÃ ĐỂ GỌI PHỤ HUYNH</span>
+        <span class="band-code">CẶP A-0427</span>
+        <svg class="qr" id="qr" viewBox="0 0 21 21" shape-rendering="crispEdges"></svg>
+      </div>
+      <footer class="foot"><span>Nguyễn Văn Tài · 2A202603004</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Vấn đề</span><span>Bối cảnh</span></p>
+        <h2>Ngày cao điểm: khoảng 15 ca trẻ lạc, mỗi ca khoảng 25 phút</h2>
+      </div>
+      <div class="body">
+        <div class="ctx">
+          <dl class="facts">
+            <dt>Ai xử lý</dt><dd>Nhân viên quầy thông tin và an ninh các khu</dd>
+            <dt>Ai chịu</dt><dd>Phụ huynh và trẻ, chủ yếu trẻ dưới 10 tuổi</dd>
+            <dt>Khi nào</dt><dd>Cuối tuần, dịp lễ, mùa hè</dd>
+            <dt>Công cụ</dt><dd>Bộ đàm, sổ ghi tay tại quầy</dd>
+          </dl>
+          <div class="stats">
+            <div class="stat"><b>~15</b><span class="small">ca / ngày cao điểm</span></div>
+            <div class="stat"><b>~25<small>′</small></b><span class="small">từ lúc báo lạc tới lúc đoàn tụ</span></div>
+            <div class="stat"><b>~6<small>h</small></b><span class="small">công / ngày — thực tế nhiều hơn vì nhiều người cùng tìm một ca</span></div>
+          </div>
+        </div>
+        <div class="callout">
+          <strong>Tác động thật</strong>
+          <p>Giờ công không phải vấn đề chính. Trong khoảng 25 phút đó, trẻ có thể đi tới hồ nước, bãi xe hoặc ra khỏi cổng.</p>
+        </div>
+      </div>
+      <footer class="foot"><span>Số có dấu ~ là ước tính, cần kiểm với khu vui chơi thực tế</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Vấn đề</span><span>Workflow hiện tại</span></p>
+        <h2>Mô tả bằng lời, truyền lần lượt từng khu</h2>
+      </div>
+      <div class="body">
+        <ol class="steps">
+          <li class="node">
+            <span class="idx">BƯỚC 1</span>
+            <span class="t">5–10′</span>
+            <h3>Tự tìm quanh khu vực</h3>
+            <span class="who">Phụ huynh</span>
+          </li>
+          <li class="node">
+            <span class="idx">BƯỚC 2</span>
+            <span class="t">3–5′</span>
+            <h3>Hỏi đường, tìm tới quầy thông tin</h3>
+            <span class="who">Phụ huynh</span>
+          </li>
+          <li class="node">
+            <span class="idx">BƯỚC 3</span>
+            <span class="t">3′</span>
+            <h3>Mô tả trẻ, nhân viên ghi tay</h3>
+            <span class="who">Quầy thông tin</span>
+          </li>
+          <li class="node hot">
+            <span class="idx">BƯỚC 4 · ĐIỂM NGHẼN</span>
+            <span class="t">15′</span>
+            <h3>Truyền bộ đàm lần lượt từng khu, tìm theo mô tả</h3>
+            <span class="who">An ninh các khu</span>
+          </li>
+          <li class="node">
+            <span class="idx">BƯỚC 5</span>
+            <span class="t">5′</span>
+            <h3>Đưa trẻ về quầy, xác minh phụ huynh</h3>
+            <span class="who">Quầy + an ninh</span>
+          </li>
+        </ol>
+        <div class="sumline">
+          <span><b>~25′</b>từ lúc báo quầy (bước 3–5)</span>
+          <span><b>+ 8–15′</b>trước khi báo (bước 1–2)</span>
+        </div>
+      </div>
+      <footer class="foot"><span>Problem Card #3 · Tìm trẻ lạc</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Vấn đề</span><span>Điểm nghẽn</span></p>
+        <h2>Điểm nghẽn có hai chiều</h2>
+      </div>
+      <div class="body">
+        <div class="two">
+          <article class="panel">
+            <h3 class="dir">Phụ huynh <span class="ar">→</span> Trẻ</h3>
+            <p class="quote">“Bé trai, áo đỏ, khoảng 5 tuổi.”</p>
+            <p class="txt">Mô tả này khớp với hàng chục trẻ trong cùng một khu. Thông tin sai lệch dần qua mỗi lần truyền bộ đàm, và các khu nghe lần lượt chứ không cùng lúc.</p>
+          </article>
+          <article class="panel">
+            <h3 class="dir">Trẻ <span class="ar">→</span> Phụ huynh</h3>
+            <p class="quote">“Con không nhớ số của mẹ.”</p>
+            <p class="txt">Nhân viên đã thấy trẻ đi một mình nhưng không liên lạc được phụ huynh, phải đưa về quầy và chờ phụ huynh tự tìm tới.</p>
+          </article>
+        </div>
+        <p class="statement">Cả hai chiều đều là bài toán <mark>định danh + truyền tin</mark>, không phải bài toán hiểu ngôn ngữ.</p>
+      </div>
+      <footer class="foot"><span>Problem Card #3 · Tìm trẻ lạc</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Phân tích</span><span>Dòng thời gian một ca lạc</span></p>
+        <h2>Thời gian thật sự mất ở đâu?</h2>
+      </div>
+      <div class="body">
+        <div class="tl">
+          <div class="br-top"><span>↓ Cảnh báo rung / GPS đánh vào đây</span></div>
+
+          <div class="seg seg-a">
+            <p class="seg-label"><b>A</b>Chưa phát hiện</p>
+            <div class="seg-bar">1–10′</div>
+            <div class="tick"><span><b>T0</b>Trẻ rời đi</span></div>
+          </div>
+          <div class="seg seg-b">
+            <p class="seg-label"><b>B</b>Tự tìm + tìm tới quầy</p>
+            <div class="seg-bar">8–15′</div>
+            <div class="tick"><span><b>T1</b>Phụ huynh phát hiện</span></div>
+          </div>
+          <div class="seg seg-c">
+            <p class="seg-label"><b>C</b>Mô tả + truyền bộ đàm + tìm</p>
+            <div class="seg-bar">~18′</div>
+            <div class="tick"><span><b>T2</b>Báo nhân viên</span></div>
+          </div>
+          <div class="seg seg-d">
+            <p class="seg-label"><b>D</b>Xác minh</p>
+            <div class="seg-bar">~5′</div>
+            <div class="tick"><span><b>T3</b></span><span class="end"><b>T4</b></span></div>
+          </div>
+
+          <div class="br-bottom"></div>
+          <p class="br-bottom-label">Metric trong card hiện chỉ đo đoạn C + D ≈ 25′</p>
+        </div>
+        <div class="insights">
+          <p>A + B có thể dài <b>9–25 phút</b> — ngang đoạn C + D — nhưng hiện chưa ai đo.</p>
+          <p class="key">Cảnh báo tách rời có giá trị nhất ở chỗ <b>rút ngắn đoạn A</b>, không phải ở chỗ tìm trẻ nhanh hơn.</p>
+        </div>
+      </div>
+      <footer class="foot"><span>Độ dài mỗi đoạn vẽ theo giá trị giữa của khoảng ước tính · T3 tìm thấy, T4 đoàn tụ</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 6 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Phân tích</span><span>So sánh phương án</span></p>
+        <h2 class="tight">Bảy phương án, chấm trên cùng một bài</h2>
+      </div>
+      <div class="body">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:26%">Phương án</th>
+                <th>Đoạn</th>
+                <th>Tin cậy</th>
+                <th>Chi phí</th>
+                <th>Báo giả</th>
+                <th>Dữ liệu cá nhân</th>
+                <th>Cần app</th>
+                <th>Kết luận</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name"><span class="id">A</span>Vòng QR + mã khẩn</td>
+                <td>B C D</td>
+                <td><span class="c good">Cao</span></td>
+                <td><span class="c good">Thấp</span></td>
+                <td><span class="c good">Không</span></td>
+                <td><span class="c good">Thấp</span></td>
+                <td><span class="c good">Không</span></td>
+                <td><span class="c v-pick">Chọn · lớp 1</span></td>
+              </tr>
+              <tr>
+                <td class="name"><span class="id">D</span>Vòng RFID + đầu đọc cổng ra</td>
+                <td>C, cổng ra</td>
+                <td><span class="c good">Cao tại điểm đọc</span></td>
+                <td><span class="c mid">TB–Cao</span></td>
+                <td><span class="c good">Thấp</span></td>
+                <td><span class="c mid">TB</span></td>
+                <td><span class="c good">Không</span></td>
+                <td><span class="c v-pick">Chọn · lớp 2</span></td>
+              </tr>
+              <tr>
+                <td class="name"><span class="id">B</span>Tag Bluetooth, rung khi xa</td>
+                <td>A</td>
+                <td><span class="c mid">TB</span></td>
+                <td><span class="c mid">Thấp–TB</span></td>
+                <td><span class="c bad">Cao</span></td>
+                <td><span class="c mid">TB</span></td>
+                <td><span class="c bad">Có</span></td>
+                <td><span class="c v-pilot">Pilot · lớp 3</span></td>
+              </tr>
+              <tr>
+                <td class="name"><span class="id">F</span>Nút SOS / phát âm trên vòng trẻ</td>
+                <td>C (mét cuối)</td>
+                <td><span class="c mid">Tuỳ nền</span></td>
+                <td><span class="c good">Thấp</span></td>
+                <td><span class="c bad">Cao nếu trẻ bấm</span></td>
+                <td><span class="c good">Thấp</span></td>
+                <td><span class="c mid">Tuỳ</span></td>
+                <td><span class="c v-no">Phụ</span></td>
+              </tr>
+              <tr>
+                <td class="name"><span class="id">C</span>Đồng hồ GPS có SIM</td>
+                <td>A C</td>
+                <td><span class="c mid">TB–Thấp</span></td>
+                <td><span class="c bad">Cao</span></td>
+                <td><span class="c mid">TB</span></td>
+                <td><span class="c bad">Cao</span></td>
+                <td><span class="c bad">Có</span></td>
+                <td><span class="c v-no">Không</span></td>
+              </tr>
+              <tr>
+                <td class="name"><span class="id">E</span>Định vị trong nhà UWB</td>
+                <td>C</td>
+                <td><span class="c good">Rất cao</span></td>
+                <td><span class="c bad">Rất cao</span></td>
+                <td><span class="c good">Thấp</span></td>
+                <td><span class="c bad">Cao</span></td>
+                <td><span class="c bad">Có</span></td>
+                <td><span class="c v-no">Không</span></td>
+              </tr>
+              <tr>
+                <td class="name"><span class="id">G</span>Camera AI nhận diện</td>
+                <td>C</td>
+                <td><span class="c bad">Thấp trong đám đông</span></td>
+                <td><span class="c bad">Rất cao</span></td>
+                <td><span class="c bad">Cao</span></td>
+                <td><span class="c bad">Rất cao</span></td>
+                <td><span class="c good">Không</span></td>
+                <td><span class="c v-no">Loại</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <footer class="foot"><span>Đoạn = đoạn thời gian A–D ở slide trước · Xanh: tốt · Vàng: trung bình · Đỏ: rủi ro</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 7 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Phân tích</span><span>Góp ý cho ý tưởng bổ sung</span></p>
+        <h2>GPS và cơ chế rung: hợp ở đâu, vướng ở đâu</h2>
+      </div>
+      <div class="body">
+        <div class="two">
+          <article class="crit-card">
+            <h3 class="crit-h">GPS</h3>
+            <dl class="crit">
+              <dt class="ok">Hợp khi</dt>
+              <dd>Cần biết trẻ đang ở đâu, ở khu ngoài trời thoáng — sai số trên điện thoại khoảng 5 m (gps.gov).</dd>
+              <dt class="warn">Vướng</dt>
+              <dd>Kém trong nhà, dưới mái che, khu nước. Sạc, SIM, thu hồi, thất lạc thiết bị. Vị trí liên tục của trẻ là dữ liệu nhạy cảm.</dd>
+              <dt class="info">Hướng thực tế</dt>
+              <dd>Không tự phát thiết bị. Trong mã khẩn, hỏi phụ huynh: con có đeo đồng hồ định vị riêng không?</dd>
+            </dl>
+          </article>
+          <article class="crit-card">
+            <h3 class="crit-h">Cơ chế rung</h3>
+            <dl class="crit">
+              <dt class="ok">Đặt ở đâu</dt>
+              <dd>Trên điện thoại phụ huynh, không phải vòng của trẻ — trẻ 3–6 tuổi thấy vòng rung sẽ sợ hoặc tháo ra.</dd>
+              <dt class="warn">Vướng</dt>
+              <dd>Báo động giả: trẻ lên trò chơi, bố mẹ chờ ở cửa ra. Kêu mãi thì phụ huynh tắt. Cảnh báo chạy nền thường phải cài app.</dd>
+              <dt class="info">Cách giảm</dt>
+              <dd>Ngưỡng kết hợp khoảng cách + thời gian (xa &gt; ~30 m trong &gt; ~60 giây); tạm tắt khi trẻ ở trong khu trò chơi có rào.</dd>
+            </dl>
+          </article>
+        </div>
+      </div>
+      <footer class="foot"><span>Ngưỡng ~30 m / ~60 giây là giả định, cần thử với 3–5 gia đình</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 8 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Mức giải pháp</span><span>No AI / Rule / Workflow / Agent</span></p>
+        <h2>Thêm GPS hay rung vẫn không biến bài này thành bài toán AI</h2>
+      </div>
+      <div class="body">
+        <div class="ladder">
+          <div class="rung on">
+            <div class="rung-name">No AI<small>quy trình</small></div>
+            <p>Vòng QR, ảnh chụp tại cổng, mã khẩn gửi đồng thời, điểm hẹn cố định.</p>
+            <span class="c v-pick">Chọn · lớp 1</span>
+          </div>
+          <div class="rung on">
+            <div class="rung-name">Rule<small>cảm biến + ngưỡng</small></div>
+            <p>Chuông cổng ra khi thiếu vòng phụ huynh; rung khi xa quá ngưỡng khoảng cách + thời gian.</p>
+            <span class="c v-pick">Chọn · lớp 2, 3</span>
+          </div>
+          <div class="rung off">
+            <div class="rung-name">Workflow có AI<small>một bước dùng LLM</small></div>
+            <p>Không có bước nào cần đọc, hiểu hay viết ngôn ngữ.</p>
+            <span class="c v-no">Không</span>
+          </div>
+          <div class="rung off">
+            <div class="rung-name">Agent<small>tự lập kế hoạch</small></div>
+            <p>Không có quyết định nào cần máy tự chọn bước tiếp theo; trao trẻ luôn do người.</p>
+            <span class="c v-no">Không</span>
+          </div>
+          <div class="rung off">
+            <div class="rung-name">Camera AI<small>nhận diện khuôn mặt</small></div>
+            <p>Sinh trắc học của trẻ em, nhận nhầm trong đám đông, hạ tầng camera phủ khắp khu.</p>
+            <span class="c bad">Loại</span>
+          </div>
+        </div>
+        <p class="gut"><span class="lbl">Quick gut</span><span class="old">No AI / process fix</span><span class="arr">→</span><span class="new">No AI (quy trình nền) + Rule (thiết bị cảnh báo)</span></p>
+      </div>
+      <footer class="foot"><span>Problem Card #3 · Tìm trẻ lạc</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 9 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Giải pháp</span><span>Ba lớp</span></p>
+        <h2>Ba lớp — lớp dưới luôn chạy được một mình</h2>
+      </div>
+      <div class="body">
+        <div class="layers">
+          <div class="layer l1">
+            <div class="layer-name"><small>Lớp 1</small>Quy trình nền</div>
+            <p>Vòng QR cho trẻ + vòng đôi cho phụ huynh · ảnh chụp tại cổng · mã khẩn gửi ảnh tới mọi khu cùng lúc · báo bất kỳ nhân viên nào · điểm hẹn cố định.</p>
+            <div class="meta"><span class="c v-pick">Bắt buộc</span><span>Giải đoạn B, C, D</span></div>
+          </div>
+          <div class="layer">
+            <div class="layer-name"><small>Lớp 2</small>Chặn cổng ra</div>
+            <p>Đầu đọc tại cổng ra: vòng của trẻ đi qua mà không có vòng phụ huynh cùng mã → chuông báo nhân viên cổng giữ lại hỏi.</p>
+            <div class="meta"><span class="c v-pick">Nên có</span><span>Chặn hậu quả nặng nhất; rẻ nếu đã dùng vòng làm vé</span></div>
+          </div>
+          <div class="layer">
+            <div class="layer-name"><small>Lớp 3</small>Cảnh báo tách rời</div>
+            <p>Tag Bluetooth trên tay trẻ ghép cặp với điện thoại phụ huynh, rung khi xa quá ngưỡng khoảng cách + thời gian.</p>
+            <div class="meta"><span class="c v-pilot">Tự nguyện · pilot</span><span>Giải đoạn A</span></div>
+          </div>
+        </div>
+        <p class="skip"><b>Không chọn:</b> tự phát đồng hồ GPS · định vị UWB · camera AI — chi phí vận hành hoặc rủi ro dữ liệu quá lớn so với khoảng 15 ca/ngày.</p>
+      </div>
+      <footer class="foot"><span>Problem Card #3 · Tìm trẻ lạc</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 10 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Giải pháp</span><span>Workflow đề xuất</span></p>
+        <h2 class="tight">Bốn cách kích hoạt, một điểm xác minh</h2>
+      </div>
+      <div class="body">
+        <div class="flow">
+          <div class="fbox f-gate">
+            <h3>Tại cổng vào · ~1′/gia đình</h3>
+            <ul>
+              <li><span class="ltag">L1</span>Vòng QR cho trẻ, vòng đôi cho phụ huynh</li>
+              <li><span class="ltag">L1</span>Phụ huynh chụp ảnh trẻ trên máy mình</li>
+              <li><span class="ltag">L3</span>Ghép tag với điện thoại (tự nguyện)</li>
+            </ul>
+          </div>
+
+          <div class="frow r1">
+            <span class="trig"><span class="ltag">L3</span>Tag rung: xa quá ngưỡng</span>
+            <span class="arr">→</span>
+            <span class="stp">Phụ huynh thấy con trong 1′? Có → kết thúc · Không → báo nhân viên</span>
+          </div>
+          <div class="frow r2">
+            <span class="trig"><span class="ltag">L1</span>Thấy trẻ đi một mình</span>
+            <span class="arr">→</span>
+            <span class="stp">Quét QR, gọi phụ huynh ~1′</span>
+            <span class="arr">→</span>
+            <span class="stp">Giữ trẻ tại điểm hẹn gần nhất</span>
+          </div>
+          <div class="frow r3">
+            <span class="trig"><span class="ltag">L1</span>Phụ huynh báo mất con</span>
+            <span class="arr">→</span>
+            <span class="stp">Mã khẩn: ảnh + mô tả tới mọi khu ~1′</span>
+            <span class="arr">→</span>
+            <span class="stp">Các khu tìm song song ~5′</span>
+          </div>
+          <div class="frow r4">
+            <span class="trig"><span class="ltag">L2</span>Vòng trẻ qua cổng ra một mình</span>
+            <span class="arr">→</span>
+            <span class="stp">Chuông cổng ra, nhân viên giữ lại hỏi</span>
+          </div>
+
+          <div class="fbox f-verify">
+            <h3>Con người quyết định</h3>
+            <strong>Xác minh bằng vòng đôi / ảnh</strong>
+            <span>Không trao trẻ chỉ dựa trên tín hiệu thiết bị hay lời nói.</span>
+          </div>
+          <div class="fbox f-log">
+            <h3>Sau mỗi ca</h3>
+            <span>Ghi sổ T0–T4, khu lạc, khu tìm thấy, có cảnh báo trước không.</span>
+          </div>
+        </div>
+        <div class="esc"><b>QUÁ 15′</b><span>Chưa tìm thấy → trích camera cổng ra + báo cơ quan chức năng theo quy trình an ninh</span></div>
+      </div>
+      <footer class="foot"><span>L1 / L2 / L3 = lớp giải pháp ở slide trước</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 11 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Đo lường</span><span>Trước / sau</span></p>
+        <h2 class="tight">Đo cả những đoạn hiện chưa ai đo</h2>
+      </div>
+      <div class="body">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:30%">Metric</th>
+                <th>Trước</th>
+                <th>Sau kỳ vọng</th>
+                <th>Cách đo</th>
+                <th>Lớp</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name">Báo lạc → đoàn tụ</td>
+                <td class="num-cell">~25′</td>
+                <td class="num-cell">&lt; 10′</td>
+                <td>Sổ an ninh</td>
+                <td>1</td>
+              </tr>
+              <tr>
+                <td class="name">Trẻ rời đi → phụ huynh phát hiện</td>
+                <td><span class="c v-no">chưa đo</span></td>
+                <td class="num-cell">&lt; 2′</td>
+                <td>Log cảnh báo của tag + phỏng vấn phụ huynh</td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td class="name">Trẻ dưới ~10 tuổi đeo vòng</td>
+                <td class="num-cell">0%</td>
+                <td class="num-cell">≥ 90%</td>
+                <td>Đếm vòng phát tại cổng</td>
+                <td>1</td>
+              </tr>
+              <tr>
+                <td class="name">Trẻ qua cổng ra không có vòng phụ huynh</td>
+                <td><span class="c v-no">chưa đo</span></td>
+                <td>100% bị giữ lại kiểm tra</td>
+                <td>Log đầu đọc cổng ra</td>
+                <td>2</td>
+              </tr>
+              <tr>
+                <td class="name">Cảnh báo giả / gia đình / lượt</td>
+                <td>—</td>
+                <td class="num-cell">≤ ~1</td>
+                <td>Log app + khảo sát khi trả tag</td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td class="name">Phụ huynh chọn dùng tag</td>
+                <td>—</td>
+                <td class="num-cell">≥ ~30%</td>
+                <td>Số tag phát / số gia đình có trẻ nhỏ</td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td class="name">Tag / vòng thất lạc, hư hỏng</td>
+                <td>—</td>
+                <td class="num-cell">≤ ~5%</td>
+                <td>Kiểm kê cuối ngày</td>
+                <td>2, 3</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <footer class="foot"><span>Mục tiêu có dấu ~ là giả định, chốt lại sau pilot</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 12 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Boundary</span><span>Làm / không làm</span></p>
+        <h2>Thiết bị chỉ cảnh báo — con người xác minh và trao trẻ</h2>
+      </div>
+      <div class="body">
+        <div class="lists">
+          <div class="list do">
+            <h3>Làm</h3>
+            <ul>
+              <li>Cảnh báo cho phụ huynh và nhân viên khi trẻ tách xa hoặc ra cổng một mình.</li>
+              <li>Gửi ảnh + mô tả tới mọi khu cùng lúc khi có ca lạc.</li>
+              <li>Lưu log tối thiểu của ca lạc (thời gian, khu) để cải tiến bố trí.</li>
+            </ul>
+          </div>
+          <div class="list dont">
+            <h3>Không làm</h3>
+            <ul>
+              <li>Không theo dõi vị trí liên tục của trẻ trên hệ thống khu vui chơi.</li>
+              <li>Không in tên trẻ lên vòng.</li>
+              <li>Không dùng nhận diện khuôn mặt hay sinh trắc học.</li>
+              <li>Không trao trẻ chỉ dựa trên tín hiệu thiết bị.</li>
+            </ul>
+          </div>
+          <div class="list data">
+            <h3>Dữ liệu cá nhân</h3>
+            <ul>
+              <li>Phụ huynh đồng ý rõ ràng khi nhận vòng; lớp 3 hoàn toàn tự nguyện.</li>
+              <li>Dữ liệu ghép cặp xoá khi trả vòng hoặc cuối ngày.</li>
+              <li>Ảnh trẻ nằm trên máy phụ huynh, chỉ gửi vào nhóm nội bộ khi có ca lạc, xoá sau khi đóng ca.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <footer class="foot"><span>Tham chiếu Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân — cần kiểm văn bản hiện hành</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 13 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Triển khai</span><span>Pilot</span></p>
+        <h2 class="tight">Pilot nhỏ nhất và khi nào dừng</h2>
+      </div>
+      <div class="body">
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:17%">Lớp</th>
+                <th style="width:25%">Phạm vi</th>
+                <th style="width:25%">Đo</th>
+                <th>Dừng / hạ cấp khi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="name">1 · Quy trình nền</td>
+                <td>Toàn khu, áp dụng ngay</td>
+                <td>T0–T4 của mọi ca lạc; tỷ lệ đeo vòng</td>
+                <td>Không dừng — đây là fallback khi mọi lớp công nghệ lỗi</td>
+              </tr>
+              <tr>
+                <td class="name">2 · Chặn cổng ra</td>
+                <td>1 cổng ra chính, 2 cuối tuần</td>
+                <td>Số lần chuông; số ca giữ lại đúng; thời gian qua cổng</td>
+                <td>Chuông kêu nhầm gây ùn cổng giờ về → chỉ bật giờ thấp điểm hoặc kiểm tra ngẫu nhiên</td>
+              </tr>
+              <tr>
+                <td class="name">3 · Cảnh báo tách rời</td>
+                <td>~50–100 tag tại khu trẻ em, 2 cuối tuần, tự nguyện</td>
+                <td>Cảnh báo giả; tỷ lệ tham gia; tag thất lạc; phản hồi khi trả tag</td>
+                <td>Báo giả &gt; ~1 lần/gia đình/lượt, hoặc tham gia &lt; ~20% → dừng tag, giữ lớp 1 + 2</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <footer class="foot"><span>Problem Card #3 · Tìm trẻ lạc</span><span class="num"></span></footer>
+    </section>
+
+    <!-- 14 -->
+    <section class="slide">
+      <div class="head">
+        <p class="eyebrow"><span class="sec">Câu hỏi</span><span>Trước khi chốt</span></p>
+        <h2>Cần kiểm gì trước khi chốt</h2>
+      </div>
+      <div class="body">
+        <div class="final">
+          <ul class="checks">
+            <li><b>~15 ca/ngày, ~25 phút/ca</b><span>Xin xem sổ ghi nhận của an ninh một khu vui chơi</span></li>
+            <li><b>Đoạn A (chưa phát hiện) dài vài phút</b><span>Phỏng vấn 3–5 phụ huynh từng bị lạc con</span></li>
+            <li><b>Ca lạc chủ yếu ở khu trong nhà hay ngoài trời</b><span>Hỏi nhân viên → quyết định GPS có đáng xem xét không</span></li>
+            <li><b>Khu vui chơi đã dùng vòng tay làm vé chưa</b><span>Quan sát tại cổng → quyết định chi phí lớp 2</span></li>
+            <li><b>Phụ huynh có chịu cài app để nhận cảnh báo</b><span>Mini survey 10 phụ huynh có con dưới 10 tuổi</span></li>
+          </ul>
+          <div class="ask">
+            <h3>Câu hỏi cho nhóm challenge</h3>
+            <ol>
+              <li>Phụ huynh đang xếp hàng ở cổng có chịu cài app chỉ để nhận cảnh báo không? Nếu không, lớp 3 còn đáng làm?</li>
+              <li>Chuông ở cổng ra có gây ùn cổng giờ về không — nên kiểm tra 100% hay ngẫu nhiên?</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <footer class="foot"><span>Ý tưởng GPS / rung của tác giả · phần phản biện có AI hỗ trợ</span><span class="num"></span></footer>
+    </section>
+
+  </div>
+
+  <nav class="controls" aria-label="Điều hướng slide">
+    <button class="btn" id="prev" type="button" aria-label="Slide trước">←</button>
+    <div class="strip" id="strip"></div>
+    <span class="count" id="count">01 / 14</span>
+    <button class="btn" id="next" type="button" aria-label="Slide tiếp theo">→</button>
+    <span class="hint">← → · F</span>
+    <button class="btn" id="fs" type="button">Toàn màn hình</button>
+  </nav>
+</main>
+
+<script>
+(() => {
+  const deck = document.getElementById('deck');
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const strip = document.getElementById('strip');
+  const count = document.getElementById('count');
+  const total = slides.length;
+  const pad = n => String(n).padStart(2, '0');
+  const deckMode = () => window.matchMedia('(min-width: 760px) and (min-height: 420px)').matches;
+  let current = 0;
+
+  slides.forEach((s, i) => {
+    const title = (s.querySelector('h1, h2')?.textContent || '').trim();
+    s.setAttribute('aria-label', `Slide ${i + 1} / ${total}: ${title}`);
+    const num = s.querySelector('.num');
+    if (num) num.textContent = `${pad(i + 1)} / ${pad(total)}`;
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.title = title;
+    b.setAttribute('aria-label', `Đến slide ${i + 1}: ${title}`);
+    b.addEventListener('click', () => show(i, true));
+    strip.appendChild(b);
+  });
+  const dots = Array.from(strip.children);
+
+  function show(i, animate) {
+    current = Math.max(0, Math.min(total - 1, i));
+    deck.classList.toggle('animate', !!animate);
+    slides.forEach((s, k) => s.classList.toggle('is-active', k === current));
+    dots.forEach((d, k) => {
+      d.setAttribute('aria-current', k === current ? 'true' : 'false');
+      d.classList.toggle('done', k < current);
+    });
+    count.textContent = `${pad(current + 1)} / ${pad(total)}`;
+    try { history.replaceState(null, '', '#' + (current + 1)); } catch (e) {}
+  }
+
+  document.getElementById('prev').addEventListener('click', () => show(current - 1, true));
+  document.getElementById('next').addEventListener('click', () => show(current + 1, true));
+
+  const fsBtn = document.getElementById('fs');
+  if (!document.fullscreenEnabled) fsBtn.hidden = true;
+  function toggleFs() {
+    try {
+      const p = document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+      if (p && p.catch) p.catch(() => {});
+    } catch (e) {}
+  }
+  fsBtn.addEventListener('click', toggleFs);
+
+  document.addEventListener('keydown', e => {
+    if (!deckMode() || e.altKey || e.ctrlKey || e.metaKey) return;
+    const onButton = e.target.closest && e.target.closest('button');
+    const k = e.key;
+    if (onButton && (k === ' ' || k === 'Enter')) return;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') { e.preventDefault(); show(current + 1, true); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); show(current - 1, true); }
+    else if (k === 'Home') { e.preventDefault(); show(0, true); }
+    else if (k === 'End') { e.preventDefault(); show(total - 1, true); }
+    else if (k === 'f' || k === 'F') { toggleFs(); }
+  });
+
+  // Decorative QR on the wristband (not a real code)
+  const qr = document.getElementById('qr');
+  if (qr) {
+    const ns = 'http://www.w3.org/2000/svg';
+    let seed = 427;
+    const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const cell = (x, y) => {
+      const r = document.createElementNS(ns, 'rect');
+      r.setAttribute('x', x); r.setAttribute('y', y);
+      r.setAttribute('width', 1); r.setAttribute('height', 1);
+      r.setAttribute('fill', 'currentColor');
+      qr.appendChild(r);
+    };
+    const inFinder = (x, y) => (x < 8 && y < 8) || (x > 12 && y < 8) || (x < 8 && y > 12);
+    for (let y = 0; y < 21; y++) for (let x = 0; x < 21; x++) if (!inFinder(x, y) && rnd() > .52) cell(x, y);
+    [[0, 0], [14, 0], [0, 14]].forEach(([fx, fy]) => {
+      for (let y = 0; y < 7; y++) for (let x = 0; x < 7; x++) {
+        const ring = x === 0 || y === 0 || x === 6 || y === 6;
+        const core = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+        if (ring || core) cell(fx + x, fy + y);
+      }
+    });
+  }
+
+  const fromHash = parseInt(location.hash.slice(1), 10);
+  const start = data => show(Number.isInteger(data && data.i) ? data.i : (fromHash > 0 ? fromHash - 1 : 0), false);
+  window.claude?.hot?.snapshot?.(() => ({ i: current }));
+  window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+})();
+</script>
