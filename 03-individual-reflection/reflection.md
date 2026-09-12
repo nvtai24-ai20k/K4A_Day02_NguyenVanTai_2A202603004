@@ -2,72 +2,73 @@
 
 > Viết bằng lời của bạn (Phase 7 trong `01-worksheet.md`). Có thể dùng AI gợi ý câu hỏi tự soi, không dùng AI viết thay. 8-12 câu, có chuyện cụ thể.
 
+> ⚠️ **Bản nháp:** mới điền phần cá nhân (scan + Problem Cards). Các ô ghi `(điền sau buổi nhóm)` bổ sung sau khi làm phần nhóm.
+
 ## Thông tin cá nhân
 
-- Họ và tên:
-- Mã học viên:
-- Nhóm:
-- Candidate problem nhóm chọn:
+- Họ và tên: Nguyễn Văn Tài
+- Mã học viên: 2A202603004
+- Nhóm: (điền sau buổi nhóm)
+- Candidate problem nhóm chọn: (điền sau buổi nhóm)
 
 ---
 
 ## 1. Tôi đã tham gia vào phần nào?
 
-Ghi việc cụ thể + kết quả cụ thể. Không ghi chung chung kiểu "tham gia thảo luận".
-
 | Hoạt động | Tôi đã làm gì? (việc cụ thể) | Kết quả / ảnh hưởng tới nhóm |
 |---|---|---|
-| Scan cá nhân | | |
-| Pitch Problem Card | | |
-| Challenge bài của bạn khác | | |
-| Gom trùng / cluster | | |
-| Chọn candidate problem | | |
-| Validation / research | | |
-| Workflow nhóm | | |
-| Problem Statement | | |
-| Rule / Workflow / Agent | | |
-| Decision | | |
+| Scan cá nhân | Scan 12 problems qua 3 vòng: việc học → đời sống / kinh doanh nhỏ → vận hành dịch vụ quy mô lớn (khách sạn, gọi xe, trạm sạc, bệnh viện, khu vui chơi); viết lại thành vấn đề chung, không gắn tên công ty | Có 3 Problem Cards ở 3 mức khác nhau (Workflow / Rule / No AI) để mang vào nhóm |
+| Pitch Problem Card | Chuẩn bị pitch Card #1 — xem xét đánh giá ≤2 sao để xử lý tài xế: ~600 ca/ngày, bottleneck ở bước xem bằng chứng ~7'/ca, tồn đọng 5-7 ngày | (điền sau buổi nhóm) |
+| Challenge bài của bạn khác | (điền sau buổi nhóm) | (điền sau buổi nhóm) |
+| Gom trùng / cluster | (điền sau buổi nhóm) | (điền sau buổi nhóm) |
+| Chọn candidate problem | (điền sau buổi nhóm) | (điền sau buổi nhóm) |
+| Validation / research | (điền sau buổi nhóm) | (điền sau buổi nhóm) |
+| Workflow nhóm | (điền sau buổi nhóm) | (điền sau buổi nhóm) |
+| Problem Statement | (điền sau buổi nhóm) | (điền sau buổi nhóm) |
+| Rule / Workflow / Agent | (điền sau buổi nhóm) | (điền sau buổi nhóm) |
+| Decision | (điền sau buổi nhóm) | (điền sau buổi nhóm) |
 
-**Dấu tay rõ nhất của tôi trong artifact cuối (1-2 câu):**
+**Dấu tay rõ nhất của tôi trong artifact cuối:**
 
 ```text
-
+(điền sau buổi nhóm)
 ```
 
 ---
 
-## 2. Bảng dùng AI (mỗi dòng 1 phase có dùng AI — 2 cột cuối bắt buộc)
+## 2. Bảng dùng AI
 
 | Phase | Tôi dùng AI để làm gì? | AI hữu ích ở đâu? | AI sai / hời hợt ở đâu? | Tôi sửa gì bằng nhận định của mình? |
 |---|---|---|---|---|
-| Scan | | | | |
-| Problem Card | | | | |
-| Workflow | | | | |
-| Research | | | | |
-| Problem Statement | | | | |
-| Rule / Workflow / Agent | | | | |
-| Decision | | | | |
-
-> Nếu phase nào không dùng AI, ghi `Không dùng` và vì sao tự làm.
+| Scan | Nhờ Claude soạn nháp bảng scan và mở rộng sang đời sống; sau đó tự bổ sung các bài vận hành quy mô lớn và nhờ Claude viết lại thành vấn đề chung, không gắn tên công ty | Viết lại nhanh, giữ đủ actor / workflow / số liệu; gợi thêm bối cảnh kế toán, HR, phụ huynh | Bản đầu chỉ quanh việc học, quá hẹp; số liệu đều là ước tính chưa có nguồn; bản thứ hai AI chọn top 3 nghiêng về bài "hợp AI" (yêu cầu đặc biệt khách sạn) | Tự chọn lại top 3 theo ba mức Workflow / Rule / No AI; đánh dấu `~` cho số ước tính |
+| Problem Card | Nhờ AI viết đủ field cho 3 card, vẽ workflow trước/sau và đóng vai skeptical PM phản biện Card #1 | Chỉ ra metric tốc độ có thể khuyến khích xem lướt, và rủi ro nhân viên tin tóm tắt AI quá mức | Card ban đầu để nhân viên chỉ đọc tóm tắt AI, chưa bắt mở bằng chứng gốc | Thêm metric tỷ lệ bị lật khi phúc tra; bắt buộc mở bằng chứng gốc; ca an toàn nghe toàn bộ ghi âm |
+| Workflow | Nhờ AI chuyển workflow mô tả bằng lời thành ASCII có thời gian từng bước cho 3 card | Trình bày nhanh, dễ đọc khi pitch; card trẻ lạc được tách thành 2 nhánh (người thấy trẻ / phụ huynh báo) | (tự rà lại: bước nào AI gộp sai, thời gian nào không hợp lý) | (điền sau khi rà) |
+| Research | (điền sau buổi nhóm) | | | |
+| Problem Statement | (điền sau buổi nhóm) | | | |
+| Rule / Workflow / Agent | (điền sau buổi nhóm) | | | |
+| Decision | (điền sau buổi nhóm) | | | |
 
 ---
 
 ## 3. Reflection câu hỏi mở
 
-Chọn 3-4 câu trong 6 câu dưới để viết thành đoạn 8-12 câu (không trả lời bullet 1 dòng):
-- Tôi học được gì khi nghe top 3 problems của các bạn khác?
-- Nhóm có lúc nào bị solution-first, đòi làm Agent cho ngầu không?
-- Tôi có thay đổi ý kiến sau khi bị challenge không, vì sao đổi?
-- Tôi đóng góp gì thật sự vào artifact cuối, phần nào có dấu tay của tôi?
-- Điều khó nhất khi viết Problem Statement là gì, metric hay boundary?
-- Nếu làm lại, tôi sẽ challenge nhóm mạnh hơn ở điểm nào?
-
 **Reflection:**
 
 ```text
+Phần cá nhân:
+Phần scan của tôi đi qua ba vòng. Vòng đầu toàn là vấn đề quanh việc học vì đó là thứ
+tôi thấy mỗi ngày, nhưng quá hẹp; vòng hai mở ra đời sống như shop online, nhắc thuốc cho
+bố mẹ; vòng ba mới chạm tới vận hành dịch vụ quy mô lớn như gọi xe, trạm sạc, khu vui
+chơi. Khi chọn top 3, tôi cố ý lấy ba bài ở ba mức khác nhau thay vì ba bài "hợp AI"
+nhất. Bài hotline trạm sạc dạy tôi rằng xếp vào lăng kính "AI có thể tốt hơn" không có
+nghĩa là cần AI: mã lỗi là tập cố định nên Rule là đủ. Bài tìm trẻ lạc thì ngược lại hẳn
+— volume nhỏ nhưng rủi ro cao, và bottleneck nằm ở định danh trẻ chứ không phải ở ngôn
+ngữ, nên kết luận No AI là hợp lý. Với bài đánh giá thấp, điều khó nhất là metric: nếu
+chỉ đo thời gian xử lý thì có thể vô tình khuyến khích xem lướt và làm tăng số ca xử lý
+oan, nên phải có metric chất lượng đi kèm.
 
-
-
+Phần nhóm: (điền sau buổi nhóm — nhóm có bị solution-first không, tôi có đổi ý sau khi
+bị challenge không, nếu làm lại sẽ challenge nhóm mạnh hơn ở điểm nào)
 ```
 
 ---
@@ -83,4 +84,3 @@ Chọn 3-4 câu trong 6 câu dưới để viết thành đoạn 8-12 câu (khô
 - [ ] [10đ] Nhóm có Go / Not Yet / No-Go + lý do rõ
 - [ ] [10đ] Reflection này có vai trò thật + AI giúp/sai ở đâu + điều học được + nếu làm lại đổi gì
 - [ ] [6đ] Tôi tự giải thích được mạch problem → workflow → metric → boundary → độ phù hợp AI
-
